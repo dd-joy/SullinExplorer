@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SullinExplorer</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <svg class="effect-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0">
+    <defs>
+      <filter id="low-quality-effect" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="soft"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="19" result="noise"/>
+        <feColorMatrix in="noise" type="saturate" values="0"/>
+        <feComponentTransfer result="faint-noise">
+          <feFuncA type="linear" slope="0.12"/>
+        </feComponentTransfer>
+        <feBlend in="faint-noise" in2="soft" mode="soft-light" result="grain"/>
+        <feComposite in="grain" in2="SourceGraphic" operator="in"/>
+      </filter>
+      <filter id="mosaic-effect" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feImage id="mosaic-map" x="0" y="0" width="1.1" height="1.1" result="cell"/>
+        <feTile in="cell" result="grid"/>
+        <feDisplacementMap in="SourceGraphic" in2="grid" scale="1.1" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+  <header class="window-top" aria-label="사이트 상단 바">
+    <div class="window-actions">
+      <div class="window-caption-buttons">
+        <button type="button" disabled aria-label="최소화">─</button>
+        <button type="button" disabled aria-label="최대화">□</button>
+        <button class="window-close" type="button" disabled aria-label="닫기">×</button>
+      </div>
+      <div class="window-utility-buttons">
+        <button type="button" disabled aria-label="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8M6 9v12h4v-7h4v7h4V9"/></svg></button>
+        <button type="button" disabled aria-label="즐겨찾기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3 6 7 1-5 5 1 8-6-4-6 4 1-8-5-5 7-1Z"/></svg></button>
+        <button id="settings-toggle" type="button" aria-label="설정" aria-expanded="false" aria-controls="settings-panel">⚙</button>
+      </div>
+    </div>
+    <img class="window-top-background" src="window-top.png" alt="" width="1920" height="65" draggable="false">
+    <div class="window-brand">
+      <img class="window-logo" src="favicon.png" alt="" width="20" height="20" draggable="false">
+      <span class="window-title">SullinExploror</span>
+    </div>
+  </header>
+  <section class="browser-chrome" aria-label="브라우저 도구 모음">
+    <div class="browser-toolbar">
+      <div class="browser-controls" aria-hidden="true">
+        <img class="nav-back" src="goto.png" alt="" width="44" height="44" draggable="false">
+        <img class="nav-forward" src="goto.png" alt="" width="36" height="36" draggable="false">
+      </div>
+      <div class="browser-address" aria-label="표시 주소">
+        <span>https://www.Nungle.com/search?q=Sullin</span>
+        <div class="address-actions">
+          <button type="button" disabled aria-label="검색">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg>
+          </button>
+          <button class="address-dropdown" type="button" disabled aria-label="주소 목록">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+          </button>
+          <button type="button" disabled aria-label="새로고침">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 9a8 8 0 1 0 0 6M20 4v5h-5"/></svg>
+          </button>
+          <button type="button" disabled aria-label="중지">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="browser-tabs" aria-label="탭">
+        <div class="browser-tab">
+          <img src="favicon.png" alt="" width="16" height="16" draggable="false">
+          <span>Sullin - Nungle Search</span>
+          <button type="button" disabled aria-label="탭 닫기">×</button>
+        </div>
+        <button class="browser-new-tab" type="button" disabled aria-label="새 탭"></button>
+      </div>
+    </div>
+    <nav class="browser-bookmarks" aria-label="북마크">
+      <a class="bookmark" href="https://www.youtube.com/@triplescosmos">
+        <img src="youtube.png" alt="" width="18" height="18" draggable="false">
+        <span>tripleS YouTube</span>
+      </a>
+      <a class="bookmark" href="https://www.youtube.com/@SullinExplorer">
+        <img src="youtube.png" alt="" width="18" height="18" draggable="false">
+        <span>SullinExplorer</span>
+      </a>
+      <a class="bookmark" href="https://x.com/triplescosmos">
+        <img src="twitter.png" alt="" width="18" height="18" draggable="false">
+        <span>@triplescosmos</span>
+      </a>
+      <a class="bookmark" href="https://x.com/first__nun">
+        <img src="twitter.png" alt="" width="18" height="18" draggable="false">
+        <span data-i18n="firstNun">@첫눈</span>
+      </a>
+      <a class="bookmark" href="https://x.com/imsullinlove">
+        <img src="twitter.png" alt="" width="18" height="18" draggable="false">
+        <span>@imsullinlove</span>
+      </a>
+      <a class="bookmark" href="https://x.com/sullinface">
+        <img src="twitter.png" alt="" width="18" height="18" draggable="false">
+        <span data-i18n="sullinFace">@설린 모음집</span>
+      </a>
+    </nav>
+  </section>
+  <main class="home">
+    <div class="search-header">
+      <h1 class="nungle">Nungle</h1>
+      <form class="search-form" id="search-form" role="search">
+        <input id="search-query" aria-label="검색" value="Sullin" autocomplete="off">
+        <button type="button" id="clear-search" aria-label="지우기">×</button>
+        <button type="submit" aria-label="검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></button>
+      </form>
+      <button class="login-button" type="button" data-i18n="login">로그인</button>
+    </div>
+    <nav class="search-categories" aria-label="검색 종류">
+      <button type="button" class="active" data-category="all" aria-pressed="true" data-i18n="allResults">전체</button>
+      <button type="button" data-category="image" aria-pressed="false" data-i18n="images">이미지</button>
+      <button type="button" data-category="video" aria-pressed="false" data-i18n="videos">동영상</button>
+      <button type="button" data-category="social" aria-pressed="false" data-i18n="social">소셜</button>
+      <a href="https://shop.cosmo.fans/ko/shop/list?artist=tripleS" data-i18n="shopping">쇼핑</a>
+    </nav>
+    <div class="results-layout">
+      <section id="video-results" class="video-results" hidden>
+        <p id="video-status" class="result-count" role="status"></p>
+        <div id="video-player-area" hidden><button id="video-close" type="button" aria-label="Close">×</button><div id="video-player"></div><a id="video-original">YouTube ↗</a></div>
+        <div id="video-list"></div>
+      </section>
+      <section id="image-gallery" class="image-gallery" aria-label="Sullin images" hidden>
+        <div class="gallery-toolbar"><span id="gallery-source"></span><button id="gallery-manage" type="button" aria-pressed="false" hidden>숨긴 게시물 보기</button><button id="gallery-refresh" type="button">새로고침</button></div>
+        <p id="gallery-status" class="result-count" role="status"></p>
+        <div id="gallery-grid" class="gallery-grid"></div>
+        <section id="image-preview" class="image-preview" aria-label="Image preview" hidden>
+          <button id="preview-close" class="preview-close" type="button" aria-label="Close">×</button>
+          <div class="preview-image-area"><img id="preview-image" alt=""></div>
+          <div class="preview-details">
+            <a id="preview-account" class="preview-account"></a>
+            <p id="preview-text"></p>
+            <p id="preview-dimensions"></p>
+            <a id="preview-post" class="preview-post">원본 게시물</a>
+            <button id="preview-moderate" class="preview-post" type="button" hidden>게시물 숨기기</button>
+            <p id="moderation-status" role="status"></p>
+          </div>
+        </section>
+      </section>
+      <section class="search-results" aria-label="검색 결과">
+        <p class="result-count" id="result-count" role="status"></p>
+        <article class="search-result" data-result-category="web">
+          <a id="namu-result-link" class="result-link" href="https://namu.wiki/w/%EC%84%A4%EB%A6%B0" target="_blank" rel="noopener noreferrer"><h2 data-i18n="namuTitle">설린 - 나무위키</h2></a>
+          <div class="result-url"><span id="namu-result-url">https://namu.wiki › w › 설린</span> <span>▾</span></div>
+          <p data-i18n="namuDescription">나무위키에서 설린에 관한 정보를 찾아보세요.</p>
+        </article>
+        <article class="search-result" data-result-category="web">
+          <a class="result-link" href="https://triples.fandom.com/wiki/Sullin" target="_blank" rel="noopener noreferrer"><h2>Sullin | tripleS Wiki | Fandom</h2></a>
+          <div class="result-url">https://triples.fandom.com › wiki › Sullin <span>▾</span></div>
+          <p data-i18n="fandomDescription">tripleS Wiki에서 설린의 프로필과 관련 정보를 살펴보세요.</p>
+        </article>
+        <article class="search-result" data-result-category="video">
+          <a class="result-link" href="https://www.youtube.com/@triplescosmos" target="_blank" rel="noopener noreferrer"><h2>tripleS - YouTube</h2></a>
+          <div class="result-url">https://www.youtube.com › @triplescosmos <span>▾</span></div>
+          <p data-i18n="triplesDescription">tripleS의 유튜브 채널. 설린과 tripleS의 영상들을 한곳에서 찾아보세요.</p>
+        </article>
+        <article class="search-result" data-result-category="social">
+          <a class="result-link" href="https://x.com/triplescosmos" target="_blank" rel="noopener noreferrer"><h2>tripleS official (@triplescosmos) | Twitter</h2></a>
+          <div class="result-url">https://twitter.com › triplescosmos <span>▾</span></div>
+          <p data-i18n="officialDescription">tripleS의 소식을 확인할 수 있는 @triplescosmos 계정으로 이동합니다.</p>
+        </article>
+        <article class="search-result" data-result-category="video">
+          <a class="result-link" href="https://www.youtube.com/@SullinExplorer" target="_blank" rel="noopener noreferrer"><h2>SullinExplorer - YouTube</h2></a>
+          <div class="result-url">https://www.youtube.com › @SullinExplorer <span>▾</span></div>
+          <p data-i18n="explorerDescription">설린의 순간을 찾아서. SullinExplorer 유튜브 채널에서 영상을 만나보세요.</p>
+          <div class="result-sitelinks"><a href="https://www.youtube.com/@SullinExplorer/videos" target="_blank" rel="noopener noreferrer" data-i18n="videos">동영상</a><a href="https://www.youtube.com/@SullinExplorer/playlists" target="_blank" rel="noopener noreferrer" data-i18n="playlists">재생목록</a></div>
+        </article>
+
+
+        <article class="search-result" data-result-category="social">
+          <a class="result-link" href="https://x.com/first__nun" target="_blank" rel="noopener noreferrer"><h2><span data-i18n="firstNun">@첫눈</span> (@first__nun) | Twitter</h2></a>
+          <div class="result-url">https://twitter.com › first__nun <span>▾</span></div>
+          <p data-i18n="firstDescription">설린을 향한 시선. @first__nun 계정의 게시물을 만나보세요.</p>
+        </article>
+        <article class="search-result" data-result-category="social">
+          <a class="result-link" href="https://x.com/imsullinlove" target="_blank" rel="noopener noreferrer"><h2>@imsullinlove | Twitter</h2></a>
+          <div class="result-url">https://twitter.com › imsullinlove <span>▾</span></div>
+          <p data-i18n="loveDescription">설린을 좋아하는 마음을 담아. @imsullinlove 계정으로 이동합니다.</p>
+        </article>
+        <article class="search-result" data-result-category="social">
+          <a class="result-link" href="https://x.com/sullinface" target="_blank" rel="noopener noreferrer"><h2><span data-i18n="sullinFace">@설린 모음집</span> | Twitter</h2></a>
+          <div class="result-url">https://twitter.com › sullinface <span>▾</span></div>
+          <p data-i18n="sullinFaceDescription">@sullinface 계정에서 설린의 게시물을 만나보세요.</p>
+        </article>
+      </section>
+      <aside class="knowledge-panel">
+        <div class="knowledge-cover"><img class="knowledge-photo" src="sullin-profile.png" alt="Sullin" width="1536" height="2048"></div>
+        <div class="knowledge-body"><h2 data-i18n="sullinName">설린</h2><p class="knowledge-subtitle">Sullin · tripleS</p><p data-i18n="archiveDescription">태국 출신의 tripleS S22 멤버. 2024년 4월 2일에 공개됐다.</p><div class="knowledge-detail"><span data-i18n="archiveLabel">아카이브</span><strong>SullinExplorer</strong></div></div>
+      </aside>
+    </div>
+    <footer class="search-footer">Nungle <span>·</span> SullinExplorer</footer>
+  </main>
+  <section id="settings-panel" class="settings-panel" aria-label="설정 옵션" hidden>
+    <label class="settings-option" for="dark-mode">
+      <span data-i18n="darkMode">다크모드</span>
+      <input id="dark-mode" class="theme-check" type="checkbox">
+    </label>
+    <label class="settings-option" for="windows7-mode">
+      <span data-i18n="windows7Mode">Windows 7 모드</span>
+      <input id="windows7-mode" class="theme-check" type="checkbox">
+    </label>
+    <button id="language-option" class="settings-option language-option" type="button">언어: 한국어</button>
+    <label class="settings-option" for="fullscreen-mode">
+      <span data-i18n="fullscreen">전체 화면</span>
+      <input id="fullscreen-mode" class="theme-check" type="checkbox">
+    </label>
+    <p id="fullscreen-status" class="settings-status" role="status" hidden></p>
+  </section>
+  <img class="page-watermark" src="watermark.png" alt="" aria-hidden="true" draggable="false">
+  <dialog id="admin-dialog" class="admin-dialog">
+    <form id="admin-form">
+      <button id="admin-close" class="admin-close" type="button" aria-label="Close">×</button>
+      <h2 id="admin-heading">관리자 로그인</h2>
+      <label><span id="admin-email-label">이메일</span><input id="admin-email" name="email" type="email" autocomplete="username" required maxlength="254"></label>
+      <label><span id="admin-password-label">비밀번호</span><input id="admin-password" name="password" type="password" autocomplete="current-password" required maxlength="1024"></label>
+      <p id="admin-status" role="status"></p>
+      <button id="admin-submit" class="login-button" type="submit">로그인</button>
+    </form>
+  </dialog>
+  <script src="deployment-config.js"></script>
+  <script src="gallery.js"></script>
+  <script src="videos.js"></script>
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
