@@ -29,6 +29,7 @@
   let active = false, frame = 0, lastTime = 0, idleUntil = 0, reactionUntil = 0;
   let x = 0, y = 0, target = { x:0, y:0 }, bubbleTimer;
   let leaving = false, exitTimer, rapidClicks = [], previousClick = -Infinity;
+  let drag = null, suppressClickUntil = 0;
   const labels = {
     ko: { pet:'패스블린 쓰다듬기 · 빠르게 4번 누르면 숨기기', hello:'패스블린 등장!', happy:['헤헤 ♡', '같이 놀자!', '설린 최고!'] },
     en: { pet:'Pet Poppi · click four times quickly to dismiss', hello:'Poppi is here!', happy:['Hehe ♡', 'Let’s play!', 'Sullin ♡'] },
@@ -37,8 +38,8 @@
   const text = () => labels[document.documentElement.lang] || labels.en;
   function bounds() {
     const area = home.getBoundingClientRect();
-    const width = mascot.offsetWidth || 110;
-    const height = mascot.offsetHeight || 145;
+    const width = mascot.offsetWidth || 55;
+    const height = mascot.offsetHeight || 72.5;
     const left = Math.max(8, area.left + 8);
     const top = Math.max(90, area.top + 36);
     return { left, top, right:Math.max(left, Math.min(innerWidth, area.right) - width - 12), bottom:Math.max(top, Math.min(innerHeight, area.bottom) - height - 12) };
@@ -64,7 +65,7 @@
     if (!active || leaving || document.hidden || reduceMotion.matches) { frame = 0; lastTime = 0; return; }
     const dt = Math.min((now - (lastTime || now)) / 1000, 0.05);
     lastTime = now;
-    if (now < reactionUntil || now < idleUntil) {
+    if (drag || now < reactionUntil || now < idleUntil) {
       mascot.classList.remove('poppi-walking');
     } else {
       mascot.classList.remove('poppi-happy');
@@ -90,11 +91,13 @@
     cancelAnimationFrame(frame); frame = 0; lastTime = 0;
     clearTimeout(bubbleTimer);
     clearTimeout(exitTimer);
+    if (drag && pet.hasPointerCapture(drag.id)) pet.releasePointerCapture(drag.id);
+    drag = null;
     leaving = false;
     rapidClicks = [];
     previousClick = -Infinity;
     mascot.hidden = true;
-    mascot.classList.remove('poppi-happy', 'poppi-walking', 'poppi-speaking', 'poppi-leaving');
+    mascot.classList.remove('poppi-happy', 'poppi-walking', 'poppi-speaking', 'poppi-leaving', 'poppi-dragging');
   }
   function jumpAway() {
     leaving = true;
@@ -122,11 +125,46 @@
     startLoop();
   }
   form.addEventListener('submit', () => {
-    if (['패스블린','poppi'].includes(query.value.trim().toLowerCase())) appear();
+    if (['패스블린','poppi'].includes(query.value.trim().toLowerCase())) {
+      query.value = 'Sullin';
+      appear();
+    }
     else hide();
+  }, { capture:true });
+  pet.addEventListener('pointerdown', event => {
+    if (!active || leaving || event.button !== 0 || drag) return;
+    drag = { id:event.pointerId, clientX:event.clientX, clientY:event.clientY, x, y, moved:false };
+    pet.setPointerCapture(event.pointerId);
+    mascot.classList.remove('poppi-walking', 'poppi-happy');
+    mascot.classList.add('poppi-dragging');
   });
+  pet.addEventListener('pointermove', event => {
+    if (!drag || drag.id !== event.pointerId) return;
+    const dx = event.clientX - drag.clientX, dy = event.clientY - drag.clientY;
+    if (Math.hypot(dx, dy) > 5) drag.moved = true;
+    if (!drag.moved) return;
+    x = drag.x + dx; y = drag.y + dy;
+    clamp(); draw();
+  });
+  function releaseDrag(event) {
+    if (!drag || event.pointerId !== drag.id) return;
+    const previous = drag;
+    drag = null;
+    if (pet.hasPointerCapture(previous.id)) pet.releasePointerCapture(previous.id);
+    mascot.classList.remove('poppi-dragging');
+    if (previous.moved || event.type === 'pointercancel') {
+      suppressClickUntil = performance.now() + 400;
+      rapidClicks = []; previousClick = -Infinity;
+    }
+    idleUntil = performance.now() + 1800;
+    chooseTarget();
+    startLoop();
+  }
+  pet.addEventListener('pointerup', releaseDrag);
+  pet.addEventListener('pointercancel', releaseDrag);
+  pet.addEventListener('lostpointercapture', releaseDrag);
   pet.addEventListener('click', () => {
-    if (!active || leaving) return;
+    if (!active || leaving || performance.now() < suppressClickUntil) return;
     const now = performance.now();
     if (now - previousClick > 450) rapidClicks = [];
     previousClick = now;

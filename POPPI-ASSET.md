@@ -1,5 +1,7 @@
 Poppi Easter egg
 
+Displayed at half size (55×72.5px, 43×57px on mobile). Pointer dragging moves the mascot without counting as a dismissal click. Summoning replaces the Easter egg query with Sullin before the normal search handler runs.
+
 Search for 패스블린 or Poppi (case-insensitive) to show the mascot. Click to react. Four quick clicks within 1.2 seconds (no gap over 450ms) trigger a jump and a fall below the viewport to dismiss it. Other searches hide it. No setting is persisted. Reduced-motion preferences disable roaming and looping animations and replace the exit with a short fade.
 
 Asset: poppi.png. Created using the built-in image_gen tool from the supplied 패스블린.png reference. Background extraction prompt:
