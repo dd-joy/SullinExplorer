@@ -15,7 +15,7 @@
 .poppi-happy .poppi-pet { animation: poppi-hop .5s ease-in-out 2; }
 .poppi-pet { touch-action: none; cursor: grab; }
 .poppi-dragging .poppi-pet { cursor: grabbing; animation: none; }
-.poppi-leaving { animation: poppi-exit 1.1s both; }
+.poppi-leaving { animation: poppi-exit .733s both; }
 .poppi-leaving .poppi-pet { pointer-events: none; animation: none; }
 @keyframes poppi-exit {
   0% { transform: translate3d(var(--poppi-exit-x),var(--poppi-exit-y),0) scale(1); animation-timing-function: ease-out; }

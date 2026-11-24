@@ -109,7 +109,7 @@
     mascot.style.setProperty('--poppi-exit-top', `${y - 85}px`);
     mascot.style.setProperty('--poppi-exit-bottom', `${innerHeight + 180}px`);
     mascot.classList.add('poppi-leaving');
-    exitTimer = setTimeout(hide, reduceMotion.matches ? 180 : 1150);
+    exitTimer = setTimeout(hide, reduceMotion.matches ? 180 : 780);
   }
   function appear() {
     if (leaving) hide();
