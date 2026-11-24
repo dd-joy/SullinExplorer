@@ -7,6 +7,8 @@ const types = { html:'text/html; charset=utf-8', css:'text/css', js:'text/javasc
 const publicFiles = new Set(['index.html','style.css','script.js','gallery.js','favicon.png','frame.png','goto.png','product-sans.ttf','sullin-profile.png','twitter.png','watermark.png','window-top.png','xcom.png','youtube.png','cursors/normal.cur','cursors/link.cur','cursors/unavailable.cur']);
 publicFiles.add('videos.js');
 publicFiles.add('deployment-config.js');
+publicFiles.add('poppi.js');
+publicFiles.add('poppi.png');
 const json = (res, code, data, headers = {}) => { res.writeHead(code, { 'Content-Type':'application/json', 'Cache-Control':'no-store', ...headers }); res.end(JSON.stringify(data)); };
 export const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
