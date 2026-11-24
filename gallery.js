@@ -5,6 +5,7 @@
   const refresh = document.getElementById('gallery-refresh');
   const interval = 5 * 60 * 1000;
   const accounts = ['sullinface', 'first__nun', 'imsullinlove'];
+  const disabledSources = new Set(['objekt']);
   const cacheKey = 'sullin-gallery-photos-v2';
   const copy = {
     ko: { source: '@설린 모음집', refresh: '새로고침', loading: '사진을 불러오는 중…', error: '사진을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.', count: n => `사진 ${n}장 · 5분마다 자동 갱신`, cached: ' · 저장된 사진 표시 중' },
@@ -204,23 +205,33 @@
     manageButton.setAttribute('aria-pressed', String(showHidden));
     const sources = document.getElementById('gallery-source');
     sources.replaceChildren();
+    function sourceButton(key, label) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'gallery-source-toggle';
+      button.dataset.source = key;
+      button.textContent = label;
+      button.setAttribute('aria-pressed', String(!disabledSources.has(key)));
+      button.addEventListener('click', () => {
+        if (disabledSources.has(key)) disabledSources.delete(key);
+        else disabledSources.add(key);
+        render();
+        sources.querySelector(`[data-source="${key}"]`)?.focus({ preventScroll:true });
+      });
+      sources.append(button);
+    }
     accounts.forEach(account => {
-      const source = document.createElement('a');
-      source.href = `https://x.com/${account}`;
-      source.textContent = account === 'sullinface' ? text.source
-        : account === 'first__nun' && language === 'ko' ? '@첫눈' : `@${account}`;
-      sources.append(source);
+      sourceButton(account, account === 'sullinface' ? text.source
+        : account === 'first__nun' && language === 'ko' ? '@첫눈' : `@${account}`);
     });
-    const objektSource = document.createElement('a');
-    objektSource.href = 'https://apollo.cafe/?member=Sullin&artist=tripleS';
-    objektSource.textContent = 'COSMO Objekt';
-    sources.append(objektSource);
+    sourceButton('objekt', 'COSMO Objekt');
     refresh.textContent = text.refresh;
     refresh.disabled = loading;
     const term = query.trim().toLowerCase();
     const general = !term || ['sullin', '설린', 'ซอลลิน', 'พิรดา บุญรักษา'].includes(term);
     const combined = [...photos, ...objektPhotos].sort((a, b) => b.timestamp - a.timestamp);
     const visible = moderationReady ? combined.filter(photo =>
+      !disabledSources.has(photo.kind === 'objekt' ? 'objekt' : photo.account || new URL(photo.post).pathname.split('/')[1]) &&
       (general || photo.text.toLowerCase().includes(term)) &&
       (hiddenPosts.has(postId(photo)) === (isAdmin && showHidden))) : [];
     grid.replaceChildren();

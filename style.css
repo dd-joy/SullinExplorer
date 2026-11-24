@@ -751,6 +751,18 @@ html[data-theme="dark"] .video-meta { color: #9dc6a9; }
 .gallery-card > span { display: block; margin-top: 7px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; }
 .gallery-card small { display: block; margin-top: 4px; color: #777; font-size: 11px; }
 html[data-theme="dark"] .gallery-toolbar button { background: #293e30; border-color: #46504a; }
+#gallery-source .gallery-source-toggle {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #4e8d60;
+  user-select: none;
+}
+#gallery-source .gallery-source-toggle[aria-pressed="false"] { color: #999; }
+#gallery-source .gallery-source-toggle:hover { text-decoration: underline; }
+#gallery-source .gallery-source-toggle:focus-visible { outline: 1px solid #7bba8d; outline-offset: 4px; }
+html[data-theme="dark"] #gallery-source .gallery-source-toggle { color: #9dc6a9; }
+html[data-theme="dark"] #gallery-source .gallery-source-toggle[aria-pressed="false"] { color: #888; }
 html[data-theme="dark"] .gallery-card img { background: #293e30; }
 html[data-theme="dark"] .search-form { background: #242b26; border-color: #46504a; }
 html[data-theme="dark"] .search-categories,
