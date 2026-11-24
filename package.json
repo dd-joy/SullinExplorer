@@ -1,5 +1,5 @@
 {
   "private": true,
-  "scripts": { "start": "node server.mjs", "setup-admin": "node setup-admin.mjs" },
+  "scripts": { "start": "node server.mjs" },
   "engines": { "node": ">=20" }
 }

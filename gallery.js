@@ -44,57 +44,6 @@
     th: ' · บันทึกรายการรูปภาพใหม่ไม่ได้ พื้นที่จัดเก็บเต็มหรือถูกปิดกั้น',
   };
   let layoutFrame = 0;
-  let isAdmin = false;
-  let showHidden = false;
-  let hiddenPosts = new Set();
-  let moderationReady = location.protocol === 'file:';
-  let moderationLoading = null;
-  const manageButton = document.getElementById('gallery-manage');
-  const moderateButton = document.getElementById('preview-moderate');
-  const moderationCopy = {
-    ko: { hidden:'숨긴 게시물 보기', normal:'일반 사진 보기', hide:'게시물 숨기기', restore:'게시물 복원', error:'관리 상태를 불러오거나 저장하지 못했어요. 다시 시도해 주세요.' },
-    en: { hidden:'View hidden posts', normal:'View visible photos', hide:'Hide post', restore:'Restore post', error:'Unable to load or save moderation. Please try again.' },
-    th: { hidden:'ดูโพสต์ที่ซ่อน', normal:'ดูรูปภาพปกติ', hide:'ซ่อนโพสต์', restore:'คืนค่าโพสต์', error:'โหลดหรือบันทึกสถานะไม่สำเร็จ โปรดลองอีกครั้ง' },
-  };
-  const postId = photo => /\/status\/(\d+)/.exec(photo.post)?.[1];
-  async function syncModeration() {
-    if (window.sullinDeployment?.static) { moderationReady = true; return; }
-    if (location.protocol === 'file:') return;
-    if (moderationLoading) return moderationLoading;
-    moderationLoading = (async () => {
-      try {
-        const response = await fetch('/api/gallery/moderation', { cache:'no-store', signal:AbortSignal.timeout(15000) });
-        if (!response.ok) throw new Error('moderation');
-        const data = await response.json();
-        if (!Array.isArray(data.hiddenPosts)) throw new Error('moderation');
-        hiddenPosts = new Set(data.hiddenPosts);
-        moderationReady = true;
-        render();
-      } catch {
-        status.textContent = (moderationCopy[language] || moderationCopy.en).error;
-      } finally { moderationLoading = null; }
-    })();
-    return moderationLoading;
-  }
-  manageButton.addEventListener('click', () => { showHidden = !showHidden; render(); });
-  moderateButton.addEventListener('click', async () => {
-    if (!selectedPhoto || !isAdmin) return;
-    moderateButton.disabled = true;
-    const message = document.getElementById('moderation-status');
-    message.textContent = '';
-    try {
-      const id = postId(selectedPhoto);
-      const response = await fetch('/api/admin/images', {
-        method:'POST', credentials:'same-origin', headers:{ 'Content-Type':'application/json' },
-        body:JSON.stringify({ postId:id, hidden:!hiddenPosts.has(id) }), signal:AbortSignal.timeout(15000),
-      });
-      if (!response.ok) throw new Error('moderation');
-      const data = await response.json();
-      hiddenPosts = new Set(data.hiddenPosts);
-      render();
-    } catch { message.textContent = (moderationCopy[language] || moderationCopy.en).error; }
-    finally { moderateButton.disabled = false; }
-  });
   const preview = document.getElementById('image-preview');
   let selectedPhoto = null;
   let selectedCard = null;
@@ -133,10 +82,6 @@
     const post = document.getElementById('preview-post');
     post.href = photo.post;
     post.textContent = photo.kind === 'objekt' ? ({ ko:'Objekt 보기', en:'View Objekt', th:'ดู Objekt' }[language] || 'View Objekt') : labels.post;
-    const management = moderationCopy[language] || moderationCopy.en;
-    moderateButton.hidden = !isAdmin || photo.kind === 'objekt';
-    moderateButton.textContent = hiddenPosts.has(postId(photo)) ? management.restore : management.hide;
-    document.getElementById('moderation-status').textContent = '';
     document.getElementById('preview-close').setAttribute('aria-label', labels.close);
     preview.hidden = false;
     document.getElementById('preview-close').focus({ preventScroll: true });
@@ -199,10 +144,6 @@
     closePreview();
     panel.append(preview);
     const text = copy[language] || copy.en;
-    const management = moderationCopy[language] || moderationCopy.en;
-    manageButton.hidden = !isAdmin;
-    manageButton.textContent = showHidden ? management.normal : management.hidden;
-    manageButton.setAttribute('aria-pressed', String(showHidden));
     const sources = document.getElementById('gallery-source');
     sources.replaceChildren();
     function sourceButton(key, label) {
@@ -230,10 +171,9 @@
     const term = query.trim().toLowerCase();
     const general = !term || ['sullin', '설린', 'ซอลลิน', 'พิรดา บุญรักษา'].includes(term);
     const combined = [...photos, ...objektPhotos].sort((a, b) => b.timestamp - a.timestamp);
-    const visible = moderationReady ? combined.filter(photo =>
+    const visible = combined.filter(photo =>
       !disabledSources.has(photo.kind === 'objekt' ? 'objekt' : photo.account || new URL(photo.post).pathname.split('/')[1]) &&
-      (general || photo.text.toLowerCase().includes(term)) &&
-      (hiddenPosts.has(postId(photo)) === (isAdmin && showHidden))) : [];
+      (general || photo.text.toLowerCase().includes(term)));
     grid.replaceChildren();
     visible.forEach(photo => {
       const imageUrl = safeUrl(photo.image, photo.kind === 'objekt' ? ['resources.cosmo.fans','static.cosmo.fans'] : ['pbs.twimg.com']);
@@ -270,7 +210,6 @@
     status.textContent = loading ? text.loading : failed
       ? text.error + (photos.length ? text.cached : '') : text.count(visible.length);
     if (storageFailed) status.textContent += storageWarnings[language] || storageWarnings.en;
-    if (!moderationReady) status.textContent = management.error;
     if (objektFailed) status.textContent += ({ ko:' · Objekt를 불러오지 못했어요.', en:' · Unable to load Objekts.', th:' · โหลด Objekt ไม่สำเร็จ' }[language] || '');
   }
 
@@ -337,22 +276,15 @@
     }
   }
 
-  refresh.addEventListener('click', () => { syncModeration(); load(true); objektUpdated = 0; loadObjekts(); });
-  setInterval(() => { if (!panel.hidden && !document.hidden) { syncModeration(); load(); } }, interval);
+  refresh.addEventListener('click', () => { load(true); objektUpdated = 0; loadObjekts(); });
+  setInterval(() => { if (!panel.hidden && !document.hidden) { load(); } }, interval);
   document.addEventListener('visibilitychange', () => { if (!panel.hidden && !document.hidden) load(); });
   window.sullinGallery = {
-    setAdmin(enabled) {
-      if (isAdmin === enabled) return;
-      isAdmin = enabled;
-      if (!enabled) showHidden = false;
-      render();
-      syncModeration();
-    },
     show(visible, nextLanguage, nextQuery) {
       panel.hidden = !visible;
       language = nextLanguage;
       query = nextQuery;
-      if (visible) { render(); syncModeration(); load(); loadObjekts(); }
+      if (visible) { render(); load(); loadObjekts(); }
     },
   };
 })();

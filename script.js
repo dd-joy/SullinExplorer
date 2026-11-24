@@ -11,9 +11,6 @@ const translations = {
   en: { language: 'Language: English', darkMode: 'Dark mode', windows7Mode: 'Windows 7 mode', settings: 'Settings', options: 'Settings options', firstNun: '@first__nun' },
   th: { language: 'ภาษา: ไทย', darkMode: 'โหมดมืด', windows7Mode: 'โหมด Windows 7', settings: 'การตั้งค่า', options: 'ตัวเลือกการตั้งค่า', firstNun: '@first__nun' },
 };
-translations.ko.login = '로그인';
-translations.en.login = 'Sign in';
-translations.th.login = 'เข้าสู่ระบบ';
 translations.ko.fullscreen = '전체 화면';
 translations.en.fullscreen = 'Full screen';
 translations.th.fullscreen = 'เต็มหน้าจอ';
