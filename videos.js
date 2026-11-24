@@ -35,8 +35,8 @@
       if (!/^[\w-]{11}$/.test(video.id)) return;
       const article = document.createElement('article');
       article.className = 'video-result';
-      const thumbnail = document.createElement('button');
-      thumbnail.type = 'button';
+      const thumbnail = document.createElement('a');
+      thumbnail.href = `https://www.youtube.com/watch?v=${video.id}`;
       thumbnail.className = 'video-thumbnail';
       thumbnail.setAttribute('aria-label', `${text.play}: ${video.title}`);
       const image = document.createElement('img');
@@ -44,11 +44,10 @@
       image.alt = ''; image.loading = 'lazy';
       const icon = document.createElement('span'); icon.textContent = '▶';
       thumbnail.append(image, icon);
-      thumbnail.addEventListener('click', () => play(video));
       const info = document.createElement('div');
-      const title = document.createElement('button');
-      title.type = 'button'; title.className = 'video-title'; title.textContent = video.title;
-      title.addEventListener('click', () => play(video));
+      const title = document.createElement('a');
+      title.href = `https://www.youtube.com/watch?v=${video.id}`;
+      title.className = 'video-title'; title.textContent = video.title;
       const meta = document.createElement('p');
       const date = new Date(video.published);
       meta.className = 'video-meta';

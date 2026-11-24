@@ -678,6 +678,7 @@ html[data-theme="dark"] .admin-dialog { background: #242b26; color: #eee; }
 .video-thumbnail span { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 30px; text-shadow: 0 1px 8px #000; }
 .video-title { padding: 0; border: 0; background: transparent; color: #1a0dab; font: 18px Arial,"Malgun Gothic",sans-serif; text-align: left; cursor: pointer; }
 .video-title:hover { text-decoration: underline; }
+.video-title { text-decoration: none; }
 .video-meta { color: #006621; font-size: 12px; line-height: 1.6; }
 .video-description { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 13px; line-height: 1.6; }
 #video-player-area { position: relative; padding: 30px 16px 16px; margin-bottom: 25px; background: #202020; }
